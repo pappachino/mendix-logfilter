@@ -38,7 +38,8 @@ func reset() {
 }
 
 func parseMendixLogline(line string) string {
-	re := regexp.MustCompile("^[0-9-]+\\s[0-9:\\.]+\\s")
+	// Match ISO 8601 timestamp string - 2022-10-13 12:26:07.623
+	re := regexp.MustCompile(`^\d{4}(.\d{2}){2}(\s|T)(\d{2}.){2}\d{2}.\d+`)
 	return re.ReplaceAllString(line, "")
 }
 
@@ -84,6 +85,7 @@ func main() {
 				fmt.Println(parseMendixLogline(line))
 			} else {
 				if l.TakeAvailable(1) > 0 {
+					// Replace the timestamp from the logs
 					fmt.Println(parseMendixLogline(line))
 					reset()
 				} else {
